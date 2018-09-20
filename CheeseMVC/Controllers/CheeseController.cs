@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using CheeseMVC.Models;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,7 +11,7 @@ namespace CheeseMVC.Controllers
 {
     public class CheeseController : Controller
     {
-        private static Dictionary<string, string> Cheeses = new Dictionary<string, string>();
+        private static List<Cheese> Cheeses = new List<Cheese>();
 
         public static bool IsAlpha(string name)
         {
@@ -51,7 +52,9 @@ namespace CheeseMVC.Controllers
                 return View("Add");
             }
 
-            Cheeses.Add(cheeseName, cheeseDescription);
+            Cheese newCheese = new Cheese(cheeseName, cheeseDescription);
+
+            Cheeses.Add(newCheese);
 
             return Redirect("/Cheese");
         }
@@ -69,7 +72,13 @@ namespace CheeseMVC.Controllers
         {
             foreach(string name in cheeseNames)
             {
-                Cheeses.Remove(name);
+                for(int i=0; i<Cheeses.Count; i++)
+                {
+                    if(Cheeses[i].Name.Equals(name))
+                    {
+                        Cheeses.Remove(Cheeses[i]);
+                    }
+                }
             }
 
             return Redirect("/Cheese");

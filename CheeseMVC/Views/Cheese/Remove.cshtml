@@ -5,10 +5,11 @@
 
 <form method="post">
     <div class="checkbox">
-        @foreach (KeyValuePair<string, string> cheese in ViewBag.cheeses)
+        @foreach (Cheese cheese in ViewBag.cheeses)
         {
-            <input type="checkbox" name="cheeseNames" value=@cheese.Key id=@cheese.Key />
-            <label for=@cheese.Key>@cheese.Key : @cheese.Value </label>
+            <input type="checkbox" name="cheeseNames" value=@cheese.Name id=@cheese.Name />
+            <label for=@cheese.Name>@cheese.Name : @cheese.Description </label>
+            <br />
         }
     </div>
 

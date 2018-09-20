@@ -10,6 +10,15 @@ namespace CheeseMVC.Models
         private string name;
         private string description;
 
+        public Cheese()
+        { }
+
+        public Cheese(string name, string description)
+        {
+            Name = name;
+            Description = description;
+        }
+
         public string Name { get; set; }
         public string Description { get; set; }
     }
