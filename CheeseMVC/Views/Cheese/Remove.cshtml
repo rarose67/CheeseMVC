@@ -1,0 +1,16 @@
+﻿@{
+}
+
+<h1>Remove a Cheese</h1>
+
+<form method="post">
+    <div class="checkbox">
+        @foreach (KeyValuePair<string, string> cheese in ViewBag.cheeses)
+        {
+            <input type="checkbox" name="cheeseNames" value=@cheese.Key id=@cheese.Key />
+            <label for=@cheese.Key>@cheese.Key : @cheese.Value </label>
+        }
+    </div>
+
+    <input type="submit" value="Remove Cheese" />
+</form>
