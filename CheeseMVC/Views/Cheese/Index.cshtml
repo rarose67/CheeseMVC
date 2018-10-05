@@ -8,11 +8,24 @@
     <p>No Cheeses :)</p>
 }
 
-<ul>
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Type</th>
+    </tr>
     @foreach (Cheese cheese in ViewBag.cheeses)
     {
-        <li>@cheese.Name : @cheese.Description</li>
+    <tr>
+        <td>@cheese.CheeseId</td>
+        <td>@cheese.Name</td>
+        <td>@cheese.Description</td>
+        <td>@cheese.Type</td>
+        <td><p><a asp-controller="Cheese" asp-action="Edit" asp-route-cheeseId="@cheese.CheeseId">Edit Cheese</a>
+               <a asp-controller="Cheese" asp-action="Edit/@cheese.CheeseId">Edit Cheese /w path var</a></p></td>
+    </tr>
     }
-</ul>
+</table>
 
 <p><a asp-controller="Cheese" asp-action="Add">Add a Cheese</a></p>

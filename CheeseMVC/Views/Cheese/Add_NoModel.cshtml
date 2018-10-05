@@ -1,0 +1,22 @@
+﻿@{
+}
+
+<h1>Add a Cheese</h1>
+
+<form method="post">
+    <div>
+        <label for="cheeseName">Name: </label>
+        <input id="cheeseName" name="name" type="text" />
+        @if(!(String.IsNullOrEmpty(ViewBag.error)))
+        {
+            <div>@ViewBag.error</div>
+        }
+    </div>
+    <div>
+        <label for="cheeseDescription">Description: </label>
+        <br />
+        <textarea id="cheeseDescription" name="description"></textarea>
+    </div>
+    
+    <input type="submit" value="Add Cheese" />
+</form>

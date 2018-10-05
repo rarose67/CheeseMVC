@@ -7,11 +7,11 @@
     <div class="checkbox">
         @foreach (Cheese cheese in ViewBag.cheeses)
         {
-            <input type="checkbox" name="cheeseNames" value=@cheese.Name id=@cheese.Name />
-            <label for=@cheese.Name>@cheese.Name : @cheese.Description </label>
+            <input type="checkbox" name="cheeseIds" value="@cheese.CheeseId" id="@cheese.CheeseId" />
+            <label for="@cheese.CheeseId">@cheese.Name : @cheese.Description </label>
             <br />
         }
     </div>
 
-    <input type="submit" value="Remove Cheese" />
+    <input type="submit" value="Remove Cheeses" />
 </form>

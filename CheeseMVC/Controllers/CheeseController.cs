@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CheeseMVC.Models;
+using CheeseMVC.Models.Data;
+using CheeseMVC.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,15 +13,13 @@ namespace CheeseMVC.Controllers
 {
     public class CheeseController : Controller
     {
-        private static List<Cheese> Cheeses = new List<Cheese>();
-
         public static bool IsAlpha(string name)
         {
             string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-            foreach(char character in name.ToLower())
+            foreach (char character in name.ToLower())
             {
-                if(!(alphabet.Contains(character)))
+                if (!(alphabet.Contains(character)))
                 {
                     return false;
                 }
@@ -30,56 +30,117 @@ namespace CheeseMVC.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            ViewBag.cheeses = Cheeses;
+            ViewBag.cheeses = CheeseData.findAll();
 
             return View();
         }
 
         public IActionResult Add()
         {
-            return View();
+            AddCheeseViewModel addCheeseViewModel = new AddCheeseViewModel();
+            return View(addCheeseViewModel);
         }
 
         [HttpPost]
-        [Route("Cheese/Add")]
-        public IActionResult NewCheese(string cheeseName, string cheeseDescription)
+        public IActionResult Add(AddCheeseViewModel addedCheese)
         {
-            if ((String.IsNullOrEmpty(cheeseName)) || !(IsAlpha(cheeseName)))
+            if (!(ModelState.IsValid))
+            {
+                return View(addedCheese);
+
+            }
+
+            if ((String.IsNullOrEmpty(addedCheese.Name)) || !(IsAlpha(addedCheese.Name)))
             {
                 string error = "The cheese name is required and must be alphabetic.";
                 ViewBag.error = error;
 
-                return View("Add");
+                return View(addedCheese);
+
             }
 
-            Cheese newCheese = new Cheese(cheeseName, cheeseDescription);
+            Cheese newCheese = new Cheese
+            {
+                Name = addedCheese.Name,
+                Description = addedCheese.Description,
+                Type = addedCheese.Type
+            };
 
-            Cheeses.Add(newCheese);
+            CheeseData.Add(newCheese);
 
             return Redirect("/Cheese");
         }
 
+       
+        public IActionResult Edit(int cheeseId)
+        {
+            Cheese cheese = CheeseData.findById(cheeseId);
+
+            EditCheeseViewModel editCheeseViewModel = new EditCheeseViewModel
+            {
+                CheeseId = cheeseId,
+                Name = cheese.Name,
+                Description = cheese.Description,
+                Type = cheese.Type
+            };
+            return View(editCheeseViewModel);
+        }
+
+        [Route("/cheese/edit/{cheeseId}")]
+        public IActionResult EditPath(int cheeseId)
+        {
+            Cheese cheese = CheeseData.findById(cheeseId);
+            Console.WriteLine("edit with path variable.");
+
+            EditCheeseViewModel editCheeseViewModel = new EditCheeseViewModel
+            {
+                CheeseId = cheeseId,
+                Name = cheese.Name,
+                Description = cheese.Description,
+                Type = cheese.Type
+            };
+            return View("Edit", editCheeseViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(EditCheeseViewModel editCheese)
+        {
+            if (!(ModelState.IsValid))
+            {
+                return View(editCheese);
+
+            }
+
+            if ((String.IsNullOrEmpty(editCheese.Name)) || !(IsAlpha(editCheese.Name)))
+            {
+                string error = "The cheese name is required and must be alphabetic.";
+                ViewBag.error = error;
+
+                return View(editCheese);
+
+            }
+
+            Cheese cheese = CheeseData.findById(editCheese.CheeseId);
+
+            cheese.Name = editCheese.Name;
+            cheese.Description = editCheese.Description;
+            cheese.Type = editCheese.Type;
+
+
+            return Redirect("/Cheese");
+        }
         public IActionResult Remove()
         {
-            ViewBag.cheeses = Cheeses;
+            ViewBag.cheeses = CheeseData.findAll();
 
             return View();
         }
 
         [HttpPost]
         [Route("Cheese/Remove")]
-        public IActionResult DeleteCheese(string[] cheeseNames)
+        public IActionResult DeleteCheese(int[] cheeseIds)
         {
-            foreach(string name in cheeseNames)
-            {
-                for(int i=0; i<Cheeses.Count; i++)
-                {
-                    if(Cheeses[i].Name.Equals(name))
-                    {
-                        Cheeses.Remove(Cheeses[i]);
-                    }
-                }
-            }
+            CheeseData.deleteById(cheeseIds);
 
             return Redirect("/Cheese");
         }
